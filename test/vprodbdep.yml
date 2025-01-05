@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vprodbdep
+  labels:
+    app: vprodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vprodb
+  template:
+    metadata:
+      labels:
+        app: vprodb
+    spec:
+      containers:
+        - name: vprodb
+          image: ammarabdelhady8132/vprofiledb
+    #      args:
+    #        - "--ignore-db-dir=lost+found"              # This is the argument to ignore the lost+found directory
+          ports:
+            - name: vprodb-port
+              containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: vpro-db-data  
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: db-pass
+      nodeSelector:
+        name: worker-node1
+      volumes:
+        - name: vpro-db-data
+          persistentVolumeClaim:
+            claimName: vpro-db-data-pvc
+
+      initContainers:
+        - name: busybox
+          image: busybox:latest  
+          args: ['rm', '-rf', '/var/lib/mysql/lost+found']
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: vpro-db-data
