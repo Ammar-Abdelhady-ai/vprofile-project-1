@@ -7,6 +7,7 @@ spec:
   - port: 80
     targetPort: vproapp-port
     protocol: TCP
+    nodePort: 30080  # You can specify any available port in the range 30000-32767
   selector:
     app: vproapp
-  type: LoadBalancer
+  type: NodePort  # Use NodePort for local access

@@ -17,8 +17,6 @@ spec:
       containers:
         - name: vprodb
           image: ammarabdelhady8132/vprofiledb
-    #      args:
-    #        - "--ignore-db-dir=lost+found"              # This is the argument to ignore the lost+found directory
           ports:
             - name: vprodb-port
               containerPort: 3306
